@@ -1,0 +1,8 @@
+{
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/Users/tar15/opt/anaconda3/envs/mortviz/bin/python"
+}
