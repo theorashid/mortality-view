@@ -1,0 +1,33 @@
+div.tooltip {
+	color: #222; 
+	background: #fff; 
+	padding: .1em; 
+	text-shadow: #f5f5f5 0 1px 0;
+	border-radius: 2px; 
+	box-shadow: 0px 0px 2px 0px #a6a6a6; 
+	opacity: 0.9; 
+	position: absolute;
+	font-size: small;
+	line-height: 100%;
+	width:150px;
+	z-index:1000;
+}
+
+#select-row {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+#current-year {
+    margin-top: 8px;
+}
+
+#map-slider {
+    max-width: 480px;
+    margin-top: 12px;
+}
+
+#gender-select {
+    margin-left: 16px;
+    margin-top: 4px;
+}
