@@ -5,7 +5,7 @@ import csv
 import json
 
 def floatify(v):
-  return round(float(v), 4)
+  return round(float(v), 1)
 
 data = collections.defaultdict(list)
 
