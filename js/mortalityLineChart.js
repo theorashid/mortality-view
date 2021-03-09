@@ -12,10 +12,6 @@ class MortalityLineChart {
             .append("svg")
             .attr("width", actualWidth)
             .attr("height", actualHeight)
-            .styles({
-                "position": "relative",
-                "top": "30%",
-            })
             .append("g").attr("transform",
                 `scale(${scaleRatio},${scaleRatio}) translate(${this.margins.left},${this.margins.top})`);
         this.reset();
@@ -41,7 +37,7 @@ class MortalityLineChart {
         this.hasContent = false;
     }
 
-    draw(data, gender_id) {
+    draw(data, gender_id, minmax_age) {
         const maybeTransition = this.hasContent ? (obj => obj.transition().duration(1000)) : (obj => obj);
 
         const mortality = data[3][gender_id];
@@ -56,8 +52,8 @@ class MortalityLineChart {
 
         // Render the Y axis
         const y = this.y;
-        y.domain([d3.min(mortalityValues, m => m[1]) - 0.1,
-        d3.max(mortalityValues, m => m[2]) + 0.1]);
+        minmax_age = minmax_age || [d3.min(mortalityValues, m => m[1]) - 0.1, d3.max(mortalityValues, m => m[2]) + 0.1];
+        y.domain(minmax_age);
         maybeTransition(this.yAxisG).call(this.yAxis);
 
         const color = d3.scaleDiverging([65, 79.5, 95], d3.interpolateRdBu)
@@ -77,11 +73,11 @@ class MortalityLineChart {
 
         if (!this.hasContent) {
             this.svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .style("text-anchor", "end")
-                .attr("x", 0)
+                .style("text-anchor", "start")
+                .attr("x", 10)
                 .attr("y", 18)
-                .text("Mortality");
+                .text("Life expectancy")
+                .attr("font-weight", "bold");
             this.msoaName1 = this.svg.append("text")
                 .style("text-anchor", "end")
                 .attr("x", this.width)
