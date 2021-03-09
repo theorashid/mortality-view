@@ -1,6 +1,6 @@
 const startYear = 2002;
 const endYear = 2018;
-const thinLine = 0.5;
+const thinLine = 1.5;
 const colorMaleStops = [67, 80, 95];
 const colorMale = d3.scaleDiverging(colorMaleStops, d3.interpolateRdBu);
 const colorFemaleStops = [73, 83.5, 95];
@@ -71,6 +71,8 @@ class MortalityMap {
 
     async draw() {
         const MSOAGeoJSON = await d3.json("Data/MSOA2011_downloaded.geojson"); // 3300418 b
+        const LADTopoJSON = await d3.json("Data/LAD2020_BGC_0.4.json")
+
         // const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.7.json");
         // const topoGeoJSON = topojson.feature(MSOATopoJSON, "MSOA2011_BGC");
 
@@ -98,10 +100,10 @@ class MortalityMap {
                 // "stroke-width": thinLine/this.scale,
                 "fill": d => this.getColor(dataJSON, d),
                 })
-        
+
         // add mesh lines here
         this.mapSvg.append("path")
-            .datum(topojson.mesh(MSOATopoJSON, MSOATopoJSON.objects["MSOA2011_BGC"], (a, b) => a !== b))
+            .datum(topojson.mesh(LADTopoJSON, LADTopoJSON.objects["LAD2020_BGC"], (a, b) => a !== b))
             .attr("fill", "none")
             .attr("stroke", "white")
             .attr("stroke-width", thinLine/this.scale)
