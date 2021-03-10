@@ -1,6 +1,6 @@
 const startYear = 2002;
 const endYear = 2018;
-const thinLine = 1.5;
+const thinLine = 0.8;
 const colorMaleStops = [67, 80, 95];
 const colorMale = d3.scaleDiverging(colorMaleStops, d3.interpolateRdBu);
 const colorFemaleStops = [73, 83.5, 95];
@@ -70,16 +70,16 @@ class MortalityMap {
     }
 
     async draw() {
-        const MSOAGeoJSON = await d3.json("Data/MSOA2011_downloaded.geojson"); // 3300418 b
+        // const MSOAGeoJSON = await d3.json("Data/MSOA2011_downloaded.geojson"); // 3300418 b
         const LADTopoJSON = await d3.json("Data/LAD2020_BGC_0.4.json")
 
-        // const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.7.json");
-        // const topoGeoJSON = topojson.feature(MSOATopoJSON, "MSOA2011_BGC");
+        const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.4.json");
+        const topoGeoJSON = topojson.feature(MSOATopoJSON, "MSOA2011_BGC");
 
         const dataJSON = await d3.json("Data/MSOAnestede0.json");
         const projection = d3
             .geoMercator()
-            .fitExtent([[0, 0], [this.width, this.height]], MSOAGeoJSON);
+            .fitExtent([[0, 0], [this.width, this.height]], topoGeoJSON);
     
         const path = d3.geoPath().projection(projection);
         let currMSOA = null;
@@ -88,7 +88,7 @@ class MortalityMap {
         let mapPoly = this.mapSvg
             .append("g")
             .selectAll("path")
-            .data(MSOAGeoJSON.features)
+            .data(topoGeoJSON.features)
             .join("path")
 
         // style paths
