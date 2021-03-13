@@ -1,6 +1,9 @@
+const maleColor = "#35978f";
+const femaleColor = "#A6611A";
+
 class MortalityLineChart {
     constructor(div) {
-        const actualWidth = div.getBoundingClientRect().width;
+        const actualWidth = div.getBoundingClientRect().width * 0.9;
         const actualHeight = actualWidth * 0.5;
         this.totalWidth = 600;
         this.totalHeight = 300;
@@ -33,6 +36,7 @@ class MortalityLineChart {
         this.y = d3.scaleLinear().range([this.height, 0]);
         this.yAxis = d3.axisLeft().scale(this.y);
         this.yAxisG = this.svg.append("g");
+        this.yAxisG.attr("id", "y-axis");
 
         this.hasContent = false;
     }
@@ -56,43 +60,49 @@ class MortalityLineChart {
         y.domain(minmax_age);
         maybeTransition(this.yAxisG).call(this.yAxis);
 
-        const color = d3.scaleDiverging([65, 79.5, 95], d3.interpolateRdBu)
+        const yAxisNode = document.getElementById("y-axis");
+        const yAxisPath = yAxisNode.childNodes[0];
+        yAxisPath["id"] = "y-axis-path";
+
         // Render the stddev area
         const area = this.svg.selectAll(".mortalityLineArea").data([mortalityValues], (d, i) => i);
         maybeTransition(area.enter().append("path").attr("class", "mortalityLineArea").merge(area))
             .attr("d", d3.area().x((d, i) => x(years[i])).y0((d, i) => y(d[1])).y1((d, i) => y(d[2])))
-            .attr("fill", color(79.5));
+            .attr("fill", gender_id == 0 ? maleColor : femaleColor)
+            .attr("opacity", "0.3");
 
         // Render the line
         const line = this.svg.selectAll(".mortalityLine").data([mortalityValues]);
         maybeTransition(line.enter().append("path").attr("class", "mortalityLine").merge(line))
             .attr("d", d3.line().x((d, i) => x(years[i])).y((d, i) => y(d[0])))
             .attr("fill", "none")
-            .attr("stroke", color(95))
+            .attr("stroke", gender_id == 0 ? maleColor : femaleColor)
             .attr("stroke-width", 2.5);
 
         if (!this.hasContent) {
             this.svg.append("text")
                 .style("text-anchor", "start")
                 .attr("x", 10)
-                .attr("y", 18)
+                .attr("y", "0.5em")
                 .text("Life expectancy")
-                .attr("font-weight", "bold");
+                .attr("font-weight", "bold")
+                .attr("font-size", "12px");
             this.msoaName1 = this.svg.append("text")
                 .style("text-anchor", "end")
                 .attr("x", this.width)
-                .attr("y", 18)
-                .attr("font-size", "16px");
+                .attr("y", "0.5em")
+                .attr("font-weight", "bold")
+                .attr("font-size", "12px");
             this.msoaName2 = this.svg.append("text")
                 .style("text-anchor", "end")
                 .attr("x", this.width)
-                .attr("y", 40)
-                .attr("font-size", "16px");
+                .attr("y", "1.75em")
+                .attr("font-size", "12px");
             this.msoaName3 = this.svg.append("text")
                 .style("text-anchor", "end")
                 .attr("x", this.width)
-                .attr("y", 62)
-                .attr("font-size", "16px");
+                .attr("y", "3em")
+                .attr("font-size", "12px");
             this.hasContent = true;
         }
         this.msoaName1.text(data[0]);

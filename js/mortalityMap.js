@@ -12,16 +12,16 @@ const legendGradientStops = 100;
 class MortalityMap {
     constructor(div, legend_div, line_chart_div) {
         this.width = div.getBoundingClientRect().width;
-        this.height = window.innerHeight * 0.8;
+        this.height = window.innerHeight * 0.75;
 
         this.cGender = "female";
         this.cYear = 2018;
         this.scale = 1;
         
         this.zoom = d3.zoom()
-            .on('zoom', (event) => {
+            .on("zoom", (event) => {
                 this.scale = event.transform.k;
-                this.mapSvg.attr('transform', event.transform);
+                this.mapSvg.attr("transform", event.transform);
                 // d3.selectAll(".map-path")
                 //     .style("stroke-width", thinLine/this.scale)
                 d3.selectAll(".line-path")
@@ -40,18 +40,41 @@ class MortalityMap {
 
         this.tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
 
-        this.slider = document.getElementById("map-slider");
-        noUiSlider.create(this.slider, {
-            start: endYear,
-            step: 1,
-            range: {
-                'min': startYear,
-                'max': endYear
-            }
-        });
-
         this.linechart = new MortalityLineChart(line_chart_div);
         this.legend = new MortalityLegend(legend_div);
+
+        this.slider = this.drawSlider();
+    }
+
+    drawSlider() {
+        const width = document.getElementById("map-slider").getBoundingClientRect().width * 0.9;
+        console.log("width", width)
+        const dataTime = d3.range(0, endYear - startYear + 1).map(function(d) {
+            return new Date(startYear + d, 1, 1);
+          });
+        
+        const sliderTime = d3
+            .sliderBottom()
+            .min(d3.min(dataTime))
+            .max(d3.max(dataTime))
+            .step(1000 * 60 * 60 * 24 * 365)
+            .width(width * 0.8)
+            .tickFormat(d3.timeFormat("%Y"))
+            .tickValues(dataTime)
+            .default(new Date(endYear, 1, 1));
+    
+        const gTime = d3
+            .select("div#map-slider")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", 100)
+            .append("g")
+            .attr("transform", "translate(30,10)");
+    
+        gTime.call(sliderTime);
+        d3.select("#current-year").text(d3.timeFormat("%Y")(sliderTime.value()));
+
+        return sliderTime;
     }
 
     getColor(dataJSON, d) {
@@ -66,7 +89,7 @@ class MortalityMap {
         const val = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][0];
         const low = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][1];
         const upp = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][2];
-        return "<b>" + msoa + "</b><br>" + district + "<br>" + region + "<br>Life expectancy: " + val + "<br>(" + low + " - " + upp + ")";
+        return "<b>" + msoa + "</b><br>" + district + "<br>" + region + "<br><br>" + val + " (" + low + " - " + upp + ") years";
     }
 
     async draw() {
@@ -123,7 +146,7 @@ class MortalityMap {
                     "left": (event.x + 16) + "px",
                     "top": (event.y - 16) + "px",
                     "display": "block",
-                    "opacity": 1,
+                    "opacity": 0.9,
                 })
         })
         
@@ -140,17 +163,19 @@ class MortalityMap {
         })
         
         // update year and path fill colors when changing year using slider
-        this.slider.noUiSlider.on("change", () => {
-            this.cYear = parseInt(this.slider.noUiSlider.get());
-            document.getElementById("current-year").innerHTML = this.cYear;
+        this.slider.on("end", val => {
+            this.cYear = val.getFullYear();
+            d3.select("#current-year").text(d3.timeFormat("%Y")(val));
 
             mapPoly
-                .style("fill", d => this.getColor(dataJSON, d));
+                .style("fill", d => this.getColor(dataJSON, d))
         })
 
         // update path fill colors when changing gender
         d3.select("#gender").on("change", (event, d) => {
             this.cGender = document.getElementById("gender").checked ? "male" : "female";
+
+            this.legend.draw(this.cGender);
 
             mapPoly
                 .style("fill", d => this.getColor(dataJSON, d));
@@ -158,12 +183,9 @@ class MortalityMap {
             this.linechart.reset();
             if (currMSOA) {
                 this.linechart.draw(dataJSON[currMSOA], this.cGender == "female" ? 1 : 0, minmaxLifeExpectancy);
-            }
-
-            this.legend.draw(this.cGender);
+            }            
         })
     }
-    // todo reload force reset gender and year
     // d.properties["MSOA2011"] == "E02000001"
 }
 

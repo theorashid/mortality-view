@@ -3,14 +3,15 @@
 }
 
 div.tooltip {
-    color: #222; 
-    background: #fff; 
-    padding: .1em; 
-    text-shadow: #f5f5f5 0 1px 0;
-    border-radius: 2px; 
-    box-shadow: 0px 0px 2px 0px #a6a6a6; 
-    opacity: 0.9; 
-    position: absolute;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	padding: 10px;
+	font: 12px sans-serif;
+	background: #333;
+	color: #eee;
+	border: 0px;
+	border-radius: 8px;
     font-size: small;
     line-height: 100%;
     width:200px;
@@ -24,10 +25,6 @@ div.tooltip {
 
 #current-year {
     margin-top: 8px;
-}
-
-#map-slider {
-    margin-top: 12px;
 }
 
 #gender-select {
@@ -51,6 +48,15 @@ div.tooltip {
 #legend {
     height: 30%;
 }
+
+#y-axis-path, #legend-axis-path {
+	stroke: none;
+}
+
+.legend-tick-lines {
+	stroke-width: 1;
+}
+
 
 /* Switch Slide
 ==========================*/
@@ -186,11 +192,14 @@ div.tooltip {
 }
 .switch-slide .switch-label:after {
     color: #FFFFFF;
-    background: #87CEEB;
+    /* background: #87CEEB; */
+	background: #35978f;
     left: -100px;
 }
 .switch-slide .switch-label:before {
-    background: #eceeef;
+    /* background: #eceeef; */
+	color: #FFFFFF;
+	background: #A6611A;
 }
 .switch-slide .switch-handle {
     display: none;
