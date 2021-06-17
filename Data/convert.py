@@ -9,7 +9,7 @@ def floatify(v):
 
 data = collections.defaultdict(list)
 
-with open('MSOAnestede0.csv', newline='') as csvfile:
+with open('MSOAe0.csv', newline='') as csvfile:
   rows = csv.DictReader(csvfile)
   for row in rows:
     current = data[row['MSOA2011']]
@@ -21,7 +21,7 @@ with open('MSOAnestede0.csv', newline='') as csvfile:
     current_data = [floatify(row[column]) for column in ('e0med', 'e0ci95low', 'e0ci95upp')]
     current[-1][1 if row['sex'] == 'female' else 0][int(row['YEAR'])] = current_data
 
-with open('MSOAnestede0.json', 'w') as out:
+with open('MSOAe0.json', 'w') as out:
   json.dump(data, out, separators=(',', ':'))
 
 print('Done.')

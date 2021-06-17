@@ -1,9 +1,9 @@
 const startYear = 2002;
-const endYear = 2018;
+const endYear = 2019;
 const thinLine = 0.8;
-const colorMaleStops = [67, 80, 95];
+const colorMaleStops = [67, 80.1, 95];
 const colorMale = d3.scaleDiverging(colorMaleStops, d3.interpolateRdBu);
-const colorFemaleStops = [73, 83.5, 95];
+const colorFemaleStops = [73, 83.8, 95];
 const colorFemale = d3.scaleDiverging(colorFemaleStops, d3.interpolateRdBu);
 const minmaxLifeExpectancy = [65, 105];
 const legendGradientStops = 100;
@@ -15,7 +15,7 @@ class MortalityMap {
         this.height = window.innerHeight * 0.75;
 
         this.cGender = "female";
-        this.cYear = 2018;
+        this.cYear = 2019;
         this.scale = 1;
         
         this.zoom = d3.zoom()
@@ -99,7 +99,7 @@ class MortalityMap {
         const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.4.json");
         const topoGeoJSON = topojson.feature(MSOATopoJSON, "MSOA2011_BGC");
 
-        const dataJSON = await d3.json("Data/MSOAnestede0.json");
+        const dataJSON = await d3.json("Data/MSOAe0.json");
         const projection = d3
             .geoMercator()
             .fitExtent([[0, 0], [this.width, this.height]], topoGeoJSON);
