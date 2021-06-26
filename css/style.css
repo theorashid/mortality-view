@@ -28,8 +28,9 @@ div.tooltip {
 }
 
 #gender-select {
-    margin-left: -16px;
-    margin-top: -8px;
+    /* margin-left: -16px;
+    margin-top: -8px; */
+	margin-top: 8px;
 }
 
 #gender-text {
@@ -60,7 +61,7 @@ div.tooltip {
 
 /* Switch Slide
 ==========================*/
-
+/*
 .switch {
 	position: relative;
 	display: block;
@@ -155,20 +156,21 @@ div.tooltip {
 .switch-input:checked ~ .switch-handle {
 	left: 74px;
 	box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
-}
+}*/
  
 /* Transition
 ========================== */
+/*
 .switch-label, .switch-handle {
 	transition: All 0.3s ease;
 	-webkit-transition: All 0.3s ease;
 	-moz-transition: All 0.3s ease;
 	-o-transition: All 0.3s ease;
-}
+}*/
 
 /* Switch Slide Style
 ==========================*/
-
+/*
 .switch-slide {
     padding: 0;
     margin: 15px 0 0;
@@ -189,18 +191,19 @@ div.tooltip {
     text-align: center;
     padding-top: 10%;
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 0 3px rgba(0, 0, 0, 0.1);
-}
-.switch-slide .switch-label:after {
-    color: #FFFFFF;
+}*/
+/* .switch-slide .switch-label:after {
+    color: #FFFFFF; */
     /* background: #87CEEB; */
-	background: #35978f;
+	/* background: #35978f;
     left: -100px;
 }
-.switch-slide .switch-label:before {
+.switch-slide .switch-label:before { */
     /* background: #eceeef; */
-	color: #FFFFFF;
+	/* color: #FFFFFF;
 	background: #A6611A;
-}
+} */
+/*
 .switch-slide .switch-handle {
     display: none;
 }
@@ -213,4 +216,54 @@ div.tooltip {
 }
 .switch-slide .switch-input:checked ~ .switch-label:after {
     left: 0;
-}
+}*/
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 52px;
+	height: 24px;
+  }
+  
+  .switch input { 
+	opacity: 0;
+	width: 0;
+	height: 0;
+  }
+  
+  .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #A6611A;
+	-webkit-transition: .4s;
+	transition: .4s;
+  }
+  
+  .slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+  }
+  
+  input:checked + .slider {
+	background-color: #35978f;
+  }
+  
+  input:focus + .slider {
+	box-shadow: 0 0 1px #35978f;
+  }
+  
+  input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+  }
