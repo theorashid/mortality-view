@@ -19,7 +19,7 @@ with open('MSOAe0.csv', newline='') as csvfile:
       current.append(row['GOR2011NM'])
       current.append([{}, {}])
     current_data = [floatify(row[column]) for column in ('e0med', 'e0ci95low', 'e0ci95upp')]
-    current[-1][1 if row['sex'] == 'female' else 0][int(row['YEAR'])] = current_data
+    current[-1][1 if row['sex'] == 'Female' else 0][int(row['YEAR'])] = current_data
 
 with open('MSOAe0.json', 'w') as out:
   json.dump(data, out, separators=(',', ':'))
