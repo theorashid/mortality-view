@@ -94,9 +94,9 @@ class MortalityMap {
 
     async draw() {
         // const MSOAGeoJSON = await d3.json("Data/MSOA2011_downloaded.geojson"); // 3300418 b
-        const LADTopoJSON = await d3.json("Data/LAD2020_BGC_0.4.json")
+        const LADTopoJSON = await d3.json("Data/LAD2020_BGC_0.2.json")
 
-        const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.4.json");
+        const MSOATopoJSON = await d3.json("Data/MSOA2011_BGC_0.2.json");
         const topoGeoJSON = topojson.feature(MSOATopoJSON, "MSOA2011_BGC");
 
         const dataJSON = await d3.json("Data/MSOAe0.json");
