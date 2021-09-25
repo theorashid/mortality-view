@@ -89,7 +89,7 @@ class MortalityMap {
         const val = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][0];
         const low = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][1];
         const upp = dataJSON[d.properties["MSOA2011"]][3][this.cGender == "female" ? 1 : 0][this.cYear][2];
-        return "<b>" + msoa + "</b><br>" + district + "<br>" + region + "<br><br>" + val + " (" + low + " - " + upp + ") years";
+        return "<b>" + msoa + "</b><br>" + district + "<br>" + region + "<br><br>" + val.toFixed(1) + " (" + low.toFixed(1) + " - " + upp.toFixed(1) + ") years";
     }
 
     async draw() {
