@@ -5,13 +5,16 @@ function toColorScale(stops, value) {
 
 class MortalityLegend {
     constructor(legend_div) {
-        const legendWidth = legend_div.getBoundingClientRect().width * 0.7;
+        const leftMargin = 10;
+        const rightMargin = 10;
+        const legendWidth = legend_div.getBoundingClientRect().width * 0.85;
         const legendHeight = legend_div.getBoundingClientRect().height;
         this.legendSvg = d3.select(legend_div)
             .append("svg")
-            .attr("width", legendWidth)
+            .attr("width", legendWidth + leftMargin + rightMargin)
             .attr("height", legendHeight)
-            .append("g");
+            .append("g")
+            .attr("transform", `translate(${leftMargin},0)`);
 
         // Create gradients for each gender
         const defs = this.legendSvg.append("defs");
@@ -35,7 +38,7 @@ class MortalityLegend {
 
         this.legend = this.legendSvg.append('g')
             .append("rect")
-            .attr("transform", "translate(0,30)")
+            .attr("transform", `translate(0,30)`)
             .attr("width", legendWidth)
             .attr("height", 15)
             .style("fill", "url(#female-gradient)");
@@ -44,13 +47,13 @@ class MortalityLegend {
         this.legendAxisMale = d3.axisBottom(
             d3.scaleLinear()
             .range([0, legendWidth])
-            .domain([67, 95])
+            .domain([70, 90])
         );
 
         this.legendAxisFemale = d3.axisBottom(
             d3.scaleLinear()
             .range([0, legendWidth])
-            .domain([73, 95])
+            .domain([75, 95])
         );
             
         this.legendBar = this.legendSvg.append("g")
@@ -79,6 +82,7 @@ class MortalityLegend {
     drawLegendLines() {
         const tickLines = d3.selectAll(".legend-tick-linesandtext").selectAll(".tick line")
             .attr("class", "legend-tick-lines")
+            .attr("y1", 15)
             .attr("y2", 20);
 
         const tickText = d3.selectAll(".legend-tick-linesandtext").selectAll(".tick text")

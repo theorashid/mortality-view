@@ -1,9 +1,9 @@
 const startYear = 2002;
 const endYear = 2019;
 const thinLine = 0.8;
-const colorMaleStops = [67, 80.1, 95];
+const colorMaleStops = [70, 80, 90];
 const colorMale = d3.scaleDiverging(colorMaleStops, d3.interpolateRdBu);
-const colorFemaleStops = [73, 83.7, 95];
+const colorFemaleStops = [75, 83.7, 95];
 const colorFemale = d3.scaleDiverging(colorFemaleStops, d3.interpolateRdBu);
 const minmaxLifeExpectancy = [65, 105];
 const legendGradientStops = 100;
@@ -143,8 +143,8 @@ class MortalityMap {
             this.tooltip.classed("hidden", false)
                 .html(tooltipText)
                 .styles({
-                    "left": (event.x + 16) + "px",
-                    "top": (event.y - 16) + "px",
+                    "left": (event.pageX + 16) + "px",
+                    "top": (event.pageY - 16) + "px",
                     "display": "block",
                     "opacity": 0.9,
                 })
@@ -154,14 +154,17 @@ class MortalityMap {
         mapPoly.on("mouseout", (event, d) => {
             d3.select(event.target).style("opacity", 1);
 
-            this.tooltip.classed("hidden", true);
+            this.tooltip.classed("hidden", true)
+                .styles({
+                    "display": "none"
+                });
         })
 
         mapPoly.on("click", (event, d) => {
             this.linechart.draw(dataJSON[d.properties["MSOA2011"]], this.cGender == "female" ? 1 : 0, minmaxLifeExpectancy);
             currMSOA = d.properties["MSOA2011"];
         })
-        
+
         // update year and path fill colors when changing year using slider
         this.slider.on("end", val => {
             this.cYear = val.getFullYear();
@@ -175,6 +178,14 @@ class MortalityMap {
         d3.select("#gender").on("change", (event, d) => {
             this.cGender = document.getElementById("gender").checked ? "male" : "female";
 
+            if(this.cGender == "male") {
+                document.getElementById("male").style.fontWeight = "bold";
+                document.getElementById("female").style.fontWeight = "normal";
+            } else {
+                document.getElementById("female").style.fontWeight = "bold";
+                document.getElementById("male").style.fontWeight = "normal";
+            }
+
             this.legend.draw(this.cGender);
 
             mapPoly
@@ -183,7 +194,15 @@ class MortalityMap {
             this.linechart.reset();
             if (currMSOA) {
                 this.linechart.draw(dataJSON[currMSOA], this.cGender == "female" ? 1 : 0, minmaxLifeExpectancy);
-            }            
+            }
+        })
+
+        d3.select("#reset").on("click", (event, d) => {
+            currMSOA = null;
+            this.linechart.reset();
+            this.mapSvg.transition()
+                .duration(750)
+                .call(this.zoom.transform, d3.zoomIdentity);
         })
     }
     // d.properties["MSOA2011"] == "E02000001"
