@@ -20,7 +20,11 @@
         <div class="container-fluid">
             <div id="outer-box">
                 <div class="row" id="select-row">
-                    <div id="map-slider" class="col-9"></div>
+                    <div id="map-slider" class="col-7"></div>
+                    <div class="col-1">
+                        <div id="playpause" class="play"></div>
+                    </div>
+                    <div class="col-1"></div>
                     <div id="gender-select" class="col-3">
                         <span id="female">Female</span>
                         <label class="switch">
@@ -38,6 +42,10 @@
                 
                 <div class="row">
                     <div class="col-7">
+                        <div id="zoom-buttons">
+                            <button type="button" class="btn btn-light" id="zoom-in">+</button>
+                            <button type="button" class="btn btn-light" id="zoom-out">-</button>
+                        </div>
                         <div id="map-chart"></div>
                     </div>
                     <div class="col-5" style="text-align: right;">
@@ -66,7 +74,9 @@
             const map = new MortalityMap(
                 document.getElementById("map-chart"),
                 document.getElementById("legend"),
-                document.getElementById("line-chart"));
+                document.getElementById("line-chart"),
+                document.getElementById("zoom-in"),
+                document.getElementById("zoom-out"));
             map.draw();
         </script>
     </body>

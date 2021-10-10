@@ -10,13 +10,18 @@ const legendGradientStops = 100;
 
 
 class MortalityMap {
-    constructor(div, legend_div, line_chart_div) {
+    constructor(div, legend_div, line_chart_div, zoom_in, zoom_out) {
         this.width = div.getBoundingClientRect().width;
         this.height = window.innerHeight * 0.75;
 
         this.cGender = "female";
         this.cYear = 2019;
         this.scale = 1;
+
+        this.pauseValues = {
+            lastT: startYear,
+            currentT: startYear
+        };
         
         this.zoom = d3.zoom()
             .on("zoom", (event) => {
@@ -25,18 +30,19 @@ class MortalityMap {
                 // d3.selectAll(".map-path")
                 //     .style("stroke-width", thinLine/this.scale)
                 d3.selectAll(".line-path")
-                    .style("stroke-width", thinLine/this.scale)
+                    .style("stroke-width", (thinLine/this.scale) + "px")
 
             })
             .scaleExtent([1, 40]);
 
-        this.mapSvg = d3.select(div)
+        this.mapSvgNode = d3.select(div)
             .append("svg")
             .attr("width", this.width)
             .attr("height", this.height)
             .attr("id", "map-svg")
-            .call(this.zoom)
-            .append("g");
+            //.append("g")
+            .call(this.zoom);
+        this.mapSvg = this.mapSvgNode.append("g");
 
         this.tooltip = d3.select("body").append("div").attr("class", "tooltip hidden");
 
@@ -44,11 +50,21 @@ class MortalityMap {
         this.legend = new MortalityLegend(legend_div);
 
         this.slider = this.drawSlider();
+
+        zoom_in.addEventListener("click", () => {
+            this.mapSvgNode.transition()
+                .duration(500)
+                .call(this.zoom.scaleBy, 2);
+        });
+        zoom_out.addEventListener("click", () => {
+            this.mapSvgNode.transition()
+                .duration(500)
+                .call(this.zoom.scaleBy, 0.5);
+        });
     }
 
     drawSlider() {
-        const width = document.getElementById("map-slider").getBoundingClientRect().width * 0.9;
-        console.log("width", width)
+        const width = document.getElementById("map-slider").getBoundingClientRect().width;
         const dataTime = d3.range(0, endYear - startYear + 1).map(function(d) {
             return new Date(startYear + d, 1, 1);
           });
@@ -58,7 +74,7 @@ class MortalityMap {
             .min(d3.min(dataTime))
             .max(d3.max(dataTime))
             .step(1000 * 60 * 60 * 24 * 365)
-            .width(width * 0.8)
+            .width(width * 0.9)
             .tickFormat(d3.timeFormat("%Y"))
             .tickValues(dataTime)
             .default(new Date(endYear, 1, 1));
@@ -72,7 +88,6 @@ class MortalityMap {
             .attr("transform", "translate(30,10)");
     
         gTime.call(sliderTime);
-        d3.select("#current-year").text(d3.timeFormat("%Y")(sliderTime.value()));
 
         return sliderTime;
     }
@@ -168,11 +183,41 @@ class MortalityMap {
         // update year and path fill colors when changing year using slider
         this.slider.on("end", val => {
             this.cYear = val.getFullYear();
-            d3.select("#current-year").text(d3.timeFormat("%Y")(val));
 
             mapPoly
                 .style("fill", d => this.getColor(dataJSON, d))
         })
+
+        /* section for play/pause functionality */
+        d3.select("#playpause").on("click", () => {
+            if (document.getElementById("playpause").className=="pause"){
+                document.getElementById("playpause").className="play";
+            } else {
+                document.getElementById("playpause").className="pause";
+                
+                if (parseInt(this.slider.value().getFullYear()) == endYear){
+                    this.pauseValues.currentT = startYear;
+                    this.slider.value(new Date(startYear, 1, 1));
+                }
+                
+                oneStep();
+            }
+        });
+
+        let oneStep = () => {
+            if ((this.pauseValues.currentT < endYear) && (document.getElementById("playpause").className == "pause")) {
+                setTimeout(() => {
+                    this.slider.value(new Date(this.pauseValues.currentT, 1, 1));
+                    oneStep();
+                    this.cYear = this.pauseValues.currentT;
+                    mapPoly
+                        .style("fill", d => this.getColor(dataJSON, d));
+                    this.pauseValues.currentT++;
+                }, 500);
+            } else {
+                document.getElementById("playpause").className="play";
+            }
+        }
 
         // update path fill colors when changing gender
         d3.select("#gender").on("change", (event, d) => {
@@ -200,7 +245,7 @@ class MortalityMap {
         d3.select("#reset").on("click", (event, d) => {
             currMSOA = null;
             this.linechart.reset();
-            this.mapSvg.transition()
+            this.mapSvgNode.transition()
                 .duration(750)
                 .call(this.zoom.transform, d3.zoomIdentity);
         })
