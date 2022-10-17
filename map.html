@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Map</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <link href="css/nouislider.min.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+        <script src="js/nouislider.min.js"></script>
+        <script src="https://d3js.org/d3.v6.min.js"> </script>
+        <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+        <script src="https://unpkg.com/topojson-client@3"></script>
+        <script src="https://unpkg.com/d3-simple-slider@1.10.4"></script>
+        <script src="js/mortalityLineChart.js"></script>
+        <script src="js/mortalityLegend.js"></script>
+        <script src="js/mortalityMap.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div id="outer-box">
+                <div class="row" id="select-row">
+                    <div id="map-slider" class="col-7"></div>
+                    <div class="col-1">
+                        <div id="playpause" class="play"></div>
+                    </div>
+                    <div class="col-1"></div>
+                    <div id="gender-select" class="col-3">
+                        <span id="female">Female</span>
+                        <label class="switch">
+                            <input type="checkbox" id="gender">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="male">Male</span>
+                        <!-- <label class="switch switch-slide">
+                            <input class="switch-input" type="checkbox" id="gender" />
+                            <span class="switch-label" data-on="Male" data-off="Female"></span> 
+                            <span class="switch-handle"></span>
+                        </label> -->
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-7" style="position: relative;">
+                        <div id="zoom-buttons" style="position: absolute;">
+                            <button type="button" class="btn btn-light" id="zoom-in">+</button>
+                            <button type="button" class="btn btn-light" id="zoom-out">-</button>
+                        </div>
+                        <div id="map-chart"></div>
+                    </div>
+                    <div class="col-5" style="text-align: right;">
+                        <div id="legend"></div>
+                        <div id="line-chart"></div>
+                        <div class="container" style="height:20%;">
+                            <button type="button" class="btn btn-info" id="reset" style="position: absolute; right: 16px; bottom: 0;">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+        <script>
+            if (document.getElementById("gender").checked) {
+                document.getElementById("male").style.fontWeight = "bold";
+                document.getElementById("female").style.fontWeight = "normal";
+            } else {
+                document.getElementById("female").style.fontWeight = "bold";
+                document.getElementById("male").style.fontWeight = "normal";
+            }
+            
+            const map = new MortalityMap(
+                document.getElementById("map-chart"),
+                document.getElementById("legend"),
+                document.getElementById("line-chart"),
+                document.getElementById("zoom-in"),
+                document.getElementById("zoom-out"));
+            map.draw();
+        </script>
+    </body>
+</html>
